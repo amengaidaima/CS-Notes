@@ -139,6 +139,41 @@ public String reverseVowels(String s) {
 }
 ```
 
+自己的做法：习惯使用类似快速排序的思想，不同的是交换之后要i++，j--,快排不用
+```java
+private final static HashSet<Character> vowels = new HashSet<>(
+        Arrays.asList('a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'));
+
+    public String reverseVowels(String s) {
+        char[] chars = s.toCharArray();
+        int i = 0;
+        int j = s.length() - 1;
+        while (i < j) {
+            while (!vowels.contains(chars[i]) && i < j) {
+                i ++;
+            }
+            while (!vowels.contains(chars[j]) && j > i) {
+                j --;
+            } 
+            swap(chars, i, j); 
+            i++;
+            j--;
+        }
+        return String.valueOf(chars);
+
+    }
+
+    public void swap(char[] s, int i, int j) {
+        char tmp = s[i];
+        s[i] = s[j];
+        s[j] = tmp;
+    }
+```
+
+
+
+
+
 ## 4. 回文字符串
 
 680\. Valid Palindrome II (Easy)
@@ -186,6 +221,44 @@ private boolean isPalindrome(String s, int i, int j) {
     return true;
 }
 ```
+5\.最长回文子串[leetcode](https://leetcode.cn/problems/longest-palindromic-substring/submissions/)
+
+动态规划思想：判断i到j之间是否是回文子串，只需要判断i+1和j-1之间是否是回文子串，然后再判断i和j位置的字符是否相等。
+
+重点：dp[i][j]作为一个二维数组，表示i和j之间是否是回文子串，如何遍历dp。
+- 首先确定j>i，如果是i从0到n遍历，j从i到n遍历，就会出现计算ij时候，i+1和j-1之间的值还未更新
+- 所以这题的遍历方法是：外层顺序遍历j，第二层顺序遍历i，这样能保证和j-1搭配的所有dp值都被计算出来了
+
+```java
+public String longestPalindrome(String s) {
+        int n = s.length();
+        boolean[][] dp = new boolean[n][n];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= i; j++) {
+                dp[i][j] = true;
+            }
+        }
+
+        String result = s.substring(0,1);
+        int maxLen= 0;
+
+        for (int r = 1; r < n; r++) {
+            for (int l = 0; l < r; l++) {
+                if (dp[l+1][r-1] && s.charAt(l) == s.charAt(r)) {
+                    dp[l][r] = true;
+                    if (r - l + 1 > maxLen) {
+                        result = s.substring(l, r + 1);
+                        maxLen = r - l + 1;
+                    }
+                }
+                
+            }
+        }
+
+        return result;
+    }
+```
 
 ## 5. 归并两个有序数组
 
@@ -221,6 +294,28 @@ public void merge(int[] nums1, int m, int[] nums2, int n) {
         }
     }
 }
+```
+
+自己写的：1）在index里使用++或者--；2）从后向前遍历时，对于A数组到头，B数组还有剩余的情况时，需要将B数组剩下的数转移到A数组前面对应的位置
+```java
+public void merge(int A[], int m, int B[], int n) {
+        int index = n + m - 1;
+        int j = n - 1;
+        int i = m - 1;
+        while (j >= 0 && i >= 0) {
+            if (A[i] > B[j]) {
+                A[index--] = A[i--];
+                // i--;
+            } else {
+                A[index--] = B[j--];
+                // j--;
+            }
+            // index--;
+        }
+        while (j >= 0) {
+            A[index--] = B[j--];
+        }
+    }
 ```
 
 ## 6. 判断链表是否存在环
@@ -265,6 +360,10 @@ Output:
 题目描述：删除 s 中的一些字符，使得它构成字符串列表 d 中的一个字符串，找出能构成的最长字符串。如果有多个相同长度的结果，返回字典序的最小字符串。
 
 通过删除字符串 s 中的一个字符能得到字符串 t，可以认为 t 是 s 的子序列，我们可以使用双指针来判断一个字符串是否为另一个字符串的子序列。
+
+双指针不仅是同时用在一个变量上，也指分别用在两个变量上
+
+返回字典序的最小字符串：longestWord.compareTo(target) < 0，说明longestWord比target小
 
 ```java
 public String findLongestWord(String s, List<String> d) {
