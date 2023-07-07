@@ -227,7 +227,9 @@ private boolean isPalindrome(String s, int i, int j) {
 
 重点：dp[i][j]作为一个二维数组，表示i和j之间是否是回文子串，如何遍历dp。
 - 首先确定j>i，如果是i从0到n遍历，j从i到n遍历，就会出现计算ij时候，i+1和j-1之间的值还未更新
-- 所以这题的遍历方法是：外层顺序遍历j，第二层顺序遍历i，这样能保证和j-1搭配的所有dp值都被计算出来了
+- dp是一个右上方三角矩阵，dp[i+1][j-1]在dp[i][j]的左下角，要想计算dp[i][j]时dp[i+1][j-1]有值，有两种遍历方式
+- 从左向右：外层循环j从1到n-1，内层循环i从0到j-1；
+- 从下向上：外层循环i从n-1到0，内层循环j从i+1到n-1
 
 ```java
 public String longestPalindrome(String s) {
