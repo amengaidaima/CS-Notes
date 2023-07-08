@@ -116,6 +116,8 @@ Given s = "leetcode", return "leotcede".
 <div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/ef25ff7c-0f63-420d-8b30-eafbeea35d11.gif" width="400px"> </div><br>
 
 ```java
+
+将已知的数据写入一个set数组
 private final static HashSet<Character> vowels = new HashSet<>(
         Arrays.asList('a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'));
 
@@ -204,6 +206,8 @@ Explanation: You could delete the character 'c'.
 
 ```java
 public boolean validPalindrome(String s) {
+
+    两个指针做循环
     for (int i = 0, j = s.length() - 1; i < j; i++, j--) {
         if (s.charAt(i) != s.charAt(j)) {
             return isPalindrome(s, i, j - 1) || isPalindrome(s, i + 1, j);
@@ -220,6 +224,36 @@ private boolean isPalindrome(String s, int i, int j) {
     }
     return true;
 }
+
+自己的做法：当if语句后只有i--，j++等下标运算时候，可以放进下标index里，改完之后就是上面的
+
+public boolean validPalindrome(String s) {
+        int i = 0;
+        int j = s.length() - 1;
+        while(i < j) {
+            if (s.charAt(i) == s.charAt(j)) {
+                i ++;
+                j --;
+            } else {
+                return isPalindrome(s, i + 1, j) || isPalindrome(s, i, j - 1);
+            }
+        }
+        return true;
+    
+    }
+
+
+    public boolean isPalindrome(String s, int i, int j) {
+        while (i < j) {
+            if (s.charAt(i) == s.charAt(j)) {
+                i++;
+                j--;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
 ```
 5\.最长回文子串[leetcode](https://leetcode.cn/problems/longest-palindromic-substring/submissions/)
 
@@ -326,7 +360,9 @@ public void merge(int A[], int m, int B[], int n) {
 
 [Leetcode](https://leetcode.com/problems/linked-list-cycle/description/) / [力扣](https://leetcode-cn.com/problems/linked-list-cycle/description/)
 
-使用双指针，一个指针每次移动一个节点，一个指针每次移动两个节点，如果存在环，那么这两个指针一定会相遇。
+使用双指针，一个指针每次移动一个节点，一个指针每次移动两个节点
+- 如果存在环，那么这两个指针一定会相遇。
+- 如果不存在环，那么快指针一定会先到链表末尾，先为null
 
 ```java
 public boolean hasCycle(ListNode head) {
@@ -372,6 +408,7 @@ public String findLongestWord(String s, List<String> d) {
     String longestWord = "";
     for (String target : d) {
         int l1 = longestWord.length(), l2 = target.length();
+        实现：如果有多个相同长度的结果，返回字典序的最小字符串
         if (l1 > l2 || (l1 == l2 && longestWord.compareTo(target) < 0)) {
             continue;
         }
