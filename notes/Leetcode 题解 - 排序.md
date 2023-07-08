@@ -122,35 +122,45 @@ Given [1,1,1,2,2,3] and k = 2, return [1,2].
 
 ```java
 public int[] topKFrequent(int[] nums, int k) {
-    Map<Integer, Integer> frequencyForNum = new HashMap<>();
-    for (int num : nums) {
-        frequencyForNum.put(num, frequencyForNum.getOrDefault(num, 0) + 1);
-    }
-    List<Integer>[] buckets = new ArrayList[nums.length + 1];
-    for (int key : frequencyForNum.keySet()) {
-        int frequency = frequencyForNum.get(key);
-        if (buckets[frequency] == null) {
-            buckets[frequency] = new ArrayList<>();
+
+        // frequencyForNum统计每个数出现的次数
+        Map<Integer, Integer> frequencyForNum = new HashMap<>();
+        for (int num : nums) {
+            frequencyForNum.put(num, frequencyForNum.getOrDefault(num, 0) + 1);
         }
-        buckets[frequency].add(key);
-    }
-    List<Integer> topK = new ArrayList<>();
-    for (int i = buckets.length - 1; i >= 0 && topK.size() < k; i--) {
-        if (buckets[i] == null) {
-            continue;
+
+        // 统计每个频次下包含的数。
+        // 例如bucket[nums.length] = {1},表示出现数组长度次数的数是1，即这个数组全是1
+        // 例如bucket[1] = {2,3,4},表示数字2，3，4都只出现了1次
+        List<Integer>[] buckets = new ArrayList[nums.length + 1];
+        for (int key : frequencyForNum.keySet()) {
+            int frequency = frequencyForNum.get(key);
+            if (buckets[frequency] == null) {
+                buckets[frequency] = new ArrayList<>();
+            }
+            buckets[frequency].add(key);
         }
-        if (buckets[i].size() <= (k - topK.size())) {
-            topK.addAll(buckets[i]);
-        } else {
-            topK.addAll(buckets[i].subList(0, k - topK.size()));
+
+        // 统计出现频次最高的K个数并保存在topK中：从后向前遍历bucket，将对应的列表的值加入结果中，直到个数为k
+        List<Integer> topK = new ArrayList<>();
+        for (int i = buckets.length - 1; i >= 0 && topK.size() < k; i--) {
+            if (buckets[i] == null) {
+                continue;
+            }
+            if (buckets[i].size() <= (k - topK.size())) {
+                topK.addAll(buckets[i]);
+            } else {
+                topK.addAll(buckets[i].subList(0, k - topK.size()));
+            }
         }
+        
+        // 将列表转化为数组
+        int[] res = new int[k];
+        for (int i = 0; i < k; i++) {
+            res[i] = topK.get(i);
+        }
+        return res;
     }
-    int[] res = new int[k];
-    for (int i = 0; i < k; i++) {
-        res[i] = topK.get(i);
-    }
-    return res;
-}
 ```
 
 ### 2. 按照字符出现次数对字符串排序
@@ -241,4 +251,35 @@ private void swap(int[] nums, int i, int j) {
     nums[i] = nums[j];
     nums[j] = t;
 }
+
+自己写的
+
+public void sortColors(int[] nums) {
+
+        // 循环不变量
+        // all in [0, zero) = 0
+        // all in [zero, i) = 1
+        // all in (two, len - 1] = 2
+
+        int zero = 0;
+        int two = nums.length - 1;
+        int i = 0;
+        while (i <= two) {
+            if (nums[i] == 0) {
+                swap(nums, zero++, i++);
+            } else if (nums[i] == 2) {
+                // 这里为什么不用i++，因为num[two]的值替换到num[i],这个值还没遍历到，需要判断一次
+                // 而上面i和zero处的值交换，zero处的值已经遍历过，为1，因此不用再判断一次，直接i++
+                swap(nums, i, two--);
+            } else {
+                i ++;
+            }
+        }
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int t = nums[i];
+        nums[i] = nums[j];
+        nums[j] = t;
+    }
 ```
