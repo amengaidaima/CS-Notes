@@ -102,6 +102,20 @@ public ListNode reverseList(ListNode head) {
     }
     return newHead.next;
 }
+
+自己写的
+
+public ListNode reverseList(ListNode head) {
+        ListNode cur = head;//cur这个变量可以直接用head，只是用cur我个人更好理解
+        ListNode pre = null;
+        while (cur != null) {
+            ListNode next = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = next;
+        }
+        return pre;
+    }
 ```
 
 ##  3. 归并两个有序的链表
@@ -110,6 +124,7 @@ public ListNode reverseList(ListNode head) {
 
 [Leetcode](https://leetcode.com/problems/merge-two-sorted-lists/description/) / [力扣](https://leetcode-cn.com/problems/merge-two-sorted-lists/description/)
 
+递归法
 ```java
 public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
     if (l1 == null) return l2;
@@ -123,6 +138,32 @@ public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
     }
 }
 ```
+
+迭代法
+```java
+
+public ListNode Merge(ListNode list1, ListNode list2) {
+// 新建一个新的链表head记录合并后的值，因为要保留一个指针的第一个结点便于最后返回结果，所以再复制一个cur结点用于遍历
+    ListNode head = new ListNode(-1);
+    ListNode cur = head;
+    while (list1 != null && list2 != null) {
+        if (list1.val <= list2.val) {
+            cur.next = list1;
+            list1 = list1.next;
+        } else {
+            cur.next = list2;
+            list2 = list2.next;
+        }
+        cur = cur.next;
+    }
+    if (list1 != null)
+        cur.next = list1;
+    if (list2 != null)
+        cur.next = list2;
+    return head.next;
+}
+```
+
 
 ##  4. 从有序链表中删除重复节点
 
@@ -143,6 +184,32 @@ public ListNode deleteDuplicates(ListNode head) {
 }
 ```
 
+```java
+public ListNode deleteDuplication(ListNode pHead) {
+
+        if (pHead == null){
+            return null;
+        }
+
+        ListNode res = new ListNode(0);
+        res.next = pHead;
+        ListNode cur = res;  
+        while(cur.next != null && cur.next.next != null){
+
+            // 如果两个结点相等，则记录这个值，将后面所有等于这个值的结点都跳过
+            if (cur.next.val == cur.next.next.val){
+                int tmp = cur.next.val;
+                while (cur.next != null && cur.next.val == tmp){
+                    cur.next = cur.next.next;
+                }
+            } else {
+                cur = cur.next;
+            }
+        }
+        return res.next;
+    }
+```
+
 ##  5. 删除链表的倒数第 n 个节点
 
 19\. Remove Nth Node From End of List (Medium)
@@ -154,6 +221,9 @@ Given linked list: 1->2->3->4->5, and n = 2.
 After removing the second node from the end, the linked list becomes 1->2->3->5.
 ```
 
+解题思路：链表题遇到和index相关的，可以利用快慢指针。例如需要寻找倒数第n个结点，先让快指针走n步，然后让慢指针走，快指针走完后，慢指针到了倒数第n个
+
+设链表的长度为 N。设置两个指针 P1 和 P2，先让 P1 移动 K 个节点，则还有 N - K 个节点可以移动。此时让 P1 和 P2 同时移动，可以知道当 P1 移动到链表结尾时，P2 移动到第 N - K 个节点处，该位置就是倒数第 K 个节点。
 ```java
 public ListNode removeNthFromEnd(ListNode head, int n) {
     ListNode fast = head;
@@ -177,6 +247,9 @@ public ListNode removeNthFromEnd(ListNode head, int n) {
 
 [Leetcode](https://leetcode.com/problems/swap-nodes-in-pairs/description/) / [力扣](https://leetcode-cn.com/problems/swap-nodes-in-pairs/description/)
 
+
+![image](https://github.com/amengaidaima/CS-Notes/assets/45648770/635fd89a-b65b-439b-9898-c7ab644a546b)
+
 ```html
 Given 1->2->3->4, you should return the list as 2->1->4->3.
 ```
@@ -199,6 +272,28 @@ public ListNode swapPairs(ListNode head) {
     }
     return node.next;
 }
+
+自己写的：重点一是result还是从前向后的，所以前面要有个不动的头结点可以返回结果；重点二是得在脑子捋清楚动作的先后顺序。以及这个循环也是有循环不变式的，比如pre每次代表什么，cur代表什么，一定要带入到中间过程中去想想
+public ListNode swapPairs(ListNode head) {
+        ListNode node = new ListNode(0);
+        node.next = head;
+        ListNode pre = node;
+        ListNode cur = head;
+        while(cur != null && cur.next != null) {
+            ListNode next = cur.next.next;
+            ListNode tmpNext = cur.next;
+
+            pre.next = tmpNext;
+            tmpNext.next = cur;
+            cur.next = next;
+           
+            pre = cur;
+            cur = next;
+
+        }
+        return node.next;
+
+    }
 ```
 
 ##  7. 链表求和
