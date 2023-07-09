@@ -263,6 +263,12 @@ public int findMin(int[] nums) {
     return nums[l];
 }
 ```
+变化题目：旋转数组中找到target值
+
+第一步：先找到最小值的minIndex
+
+第二步：若target>nums[nums.length-1],二分查找nums[0,minIndex-1] (修改left和right的值即可，不用截取数组)；否则二分查找nums[minIndex,length-1]
+
 
 ## 6. 查找区间
 
@@ -293,6 +299,7 @@ public int[] searchRange(int[] nums, int target) {
     }
 }
 
+// 这个就记住吧
 private int findFirst(int[] nums, int target) {
     int l = 0, h = nums.length; // 注意 h 的初始值
     while (l < h) {
