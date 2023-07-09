@@ -289,6 +289,26 @@ public boolean isSubsequence(String s, String t) {
     }
     return true;
 }
+
+双指针做法，不依赖indexof方法
+class Solution {
+    public boolean isSubsequence(String s, String t) {
+        int n = s.length(), m = t.length();
+        int i = 0, j = 0;
+        while (i < n && j < m) {
+            if (s.charAt(i) == t.charAt(j)) {
+                i++;
+            }
+            j++;
+        }
+        return i == n;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode.cn/problems/is-subsequence/solution/pan-duan-zi-xu-lie-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 ```
 
 ## 9. 修改一个数成为非递减数组
@@ -339,6 +359,8 @@ the contiguous subarray [4,-1,2,1] has the largest sum = 6.
 ```
 
 ```java
+// 动态规划：记录前一个数为尾的最大子数组之和
+// 重点是这个初始值的设定以及遍历从第二个数开始，因为数组里可能有负数，也不确定最小的能是多少
 public int maxSubArray(int[] nums) {
     if (nums == null || nums.length == 0) {
         return 0;
@@ -351,6 +373,7 @@ public int maxSubArray(int[] nums) {
     }
     return maxSum;
 }
+
 ```
 
 ## 11. 分隔字符串使同种字符出现在一起
